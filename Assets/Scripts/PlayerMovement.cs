@@ -11,20 +11,36 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController controller;
     private Vector3 velocity;
     private bool grounded;
+    private Transform cameraTransform;
 
     void Start()
     {
         controller = gameObject.AddComponent<CharacterController>();
         controller.minMoveDistance = 0;
+
+        cameraTransform = Camera.main.transform;
     }
 
     
     void Update()
     {
+        
         grounded = controller.isGrounded;
         if (grounded && velocity.y < 0) velocity.y = 0;
+        
+        //
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
 
-        Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        forward.y = 0;
+        right.y = 0;
+
+        forward.Normalize();
+        right.Normalize();
+        //
+
+        Vector3 movement = Input.GetAxis("Horizontal") * right + Input.GetAxis("Vertical") * forward;
+
         controller.Move(movement * Time.deltaTime * playerSpeed);
 
         if (movement != Vector3.zero) transform.forward = movement;
