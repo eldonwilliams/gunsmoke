@@ -29,14 +29,8 @@ public class PlayerMovement : MonoBehaviour
         if (grounded && velocity.y < 0) velocity.y = 0;
         
         //
-        Vector3 forward = cameraTransform.forward;
-        Vector3 right = cameraTransform.right;
-
-        forward.y = 0;
-        right.y = 0;
-
-        forward.Normalize();
-        right.Normalize();
+        Vector3 forward = Vector3Utils.ProjectHorizontally(cameraTransform.forward);
+        Vector3 right = Vector3Utils.ProjectHorizontally(cameraTransform.right);
         //
 
         Vector3 movement = Input.GetAxis("Horizontal") * right + Input.GetAxis("Vertical") * forward;

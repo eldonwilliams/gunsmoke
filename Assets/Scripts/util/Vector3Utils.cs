@@ -11,4 +11,9 @@ public class Vector3Utils {
             Mathf.Abs(of.z)
         );
     }
+
+    public static Vector3 ProjectHorizontally(Vector3 a) {
+        a.y = 0;
+        return a.normalized;
+    }
 }
