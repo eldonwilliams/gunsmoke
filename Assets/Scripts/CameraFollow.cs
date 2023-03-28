@@ -13,6 +13,7 @@ public class CameraFollow : MonoBehaviour
         STATIONARY,
     }
 
+    public float move = 5.0f;
     // The type of following currently active
     public FollowType followType = FollowType.MOVING;
     public Transform trackedObject;
@@ -60,21 +61,30 @@ public class CameraFollow : MonoBehaviour
 
     Vector3 lastPosition = Vector3.zero;
     float rotLerpMulti = 0.75f;
+    bool isTrackedVisible;
 
     private void movingUpdate() {
         if (lastPosition == Vector3.zero) lastPosition = trackedObject.position;
         Vector3 deltaPosition = trackedObject.position - lastPosition;
         lastPosition = trackedObject.position;
 
+        isTrackedVisible = trackedObject.GetComponent<Renderer>().isVisible;
+
         //
-        Vector3 position = trackedObject.position - deltaPosition;
-        position -= trackedObject.forward;
+        Vector3 position = trackedObject.position - (deltaPosition * move / Time.deltaTime);
+        // position -= trackedObject.forward;
         position.y += offsetY;
-        Vector3 rotation = Quaternion.LookRotation(((trackedObject.forward + trackedObject.position) - position).normalized).eulerAngles;
+        position.y -= deltaPosition.magnitude * move / Time.deltaTime;
+        Vector3 rotation = Quaternion.LookRotation(((deltaPosition / Time.deltaTime + trackedObject.position) - position).normalized).eulerAngles;
         //
 
-        rotLerpMulti = Mathf.Lerp(rotLerpMulti, deltaPosition.magnitude > 0 ? 0.2f : 0.75f, Time.deltaTime * trackSpeed);
-        cameraTransform.position = Vector3.Lerp(cameraTransform.position, position, Time.deltaTime * trackSpeed);
+        rotLerpMulti = Mathf.Lerp(rotLerpMulti, deltaPosition.magnitude > 0 ? 0.0f : 0.75f, Time.deltaTime * trackSpeed);
+        //
+        Vector3 newPosition = Vector3.Lerp(cameraTransform.position, position, Time.deltaTime * trackSpeed);
+        newPosition.y = Mathf.Lerp(cameraTransform.position.y, position.y, Time.deltaTime * trackSpeed);
+        cameraTransform.position = newPosition;
+        
+        //
         cameraTransform.rotation = Quaternion.Lerp(cameraTransform.rotation, Quaternion.Euler(rotation), Time.deltaTime * trackSpeed * rotLerpMulti);
     }
 
