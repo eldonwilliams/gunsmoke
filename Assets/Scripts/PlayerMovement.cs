@@ -37,7 +37,14 @@ public class PlayerMovement : MonoBehaviour
 
         controller.Move(movement * Time.deltaTime * playerSpeed);
 
-        if (movement != Vector3.zero) transform.forward = movement;
+        Vector3 mousePos = Input.mousePosition;
+        Ray mouseRay = cameraTransform.GetComponent<Camera>().ScreenPointToRay(mousePos);
+        RaycastHit hit;
+        if (Physics.Raycast(mouseRay, out hit, 30.0f)) {
+            transform.forward = hit.point + transform.position;
+        }
+
+        // if (movement != Vector3.zero) transform.forward = movement;
 
         if (Input.GetButtonDown("Jump") && grounded)
             velocity.y += Mathf.Sqrt(playerJumpHeight * -3.0f * gravity);
