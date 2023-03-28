@@ -366,7 +366,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 90
+  field of view: 70
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -416,6 +416,7 @@ MonoBehaviour:
   trackedObject: {fileID: 1170030230}
   offsetY: 10
   trackSpeed: 2
+  camera: {fileID: 0}
 --- !u!1001 &1108915678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -662,7 +663,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 97031bf6bb62a4835964463541368830, type: 2}
+  - {fileID: 2100000, guid: b2011382501c246829d03d9ea08f9638, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
