@@ -64,21 +64,41 @@ public class CameraFollow : MonoBehaviour
     bool isTrackedVisible;
 
     private void movingUpdate() {
+        /*
+            On first update, lastPosition will be Vector3.zero.
+                Set to trackedObject.position, b/c deltaPosition on first frame should be ~0,0,0
+            Find the change in position (newPos - oldPos)
+            Update last position for next frame
+        */
         if (lastPosition == Vector3.zero) lastPosition = trackedObject.position;
         Vector3 deltaPosition = trackedObject.position - lastPosition;
         lastPosition = trackedObject.position;
+        // The deltaVector but with a magnitude of 1, used for adding to other vectors
+        // trackedObject.position where y compoonent is 0
 
         isTrackedVisible = trackedObject.GetComponent<Renderer>().isVisible;
 
         //
         Vector3 position = trackedObject.position - (deltaPosition * move / Time.deltaTime);
         // position -= trackedObject.forward;
+        // Position calculation
+        /*
+            Position is the trackedObject's position subtracted by the change in position ()
+        */
+        // Removed: position -= trackedObject.forward;
         position.y += offsetY;
         position.y -= deltaPosition.magnitude * move / Time.deltaTime;
         Vector3 rotation = Quaternion.LookRotation(((deltaPosition / Time.deltaTime + trackedObject.position) - position).normalized).eulerAngles;
         //
+        /*
+            Use the deltaVector 
+        */
 
         rotLerpMulti = Mathf.Lerp(rotLerpMulti, deltaPosition.magnitude > 0 ? 0.0f : 0.75f, Time.deltaTime * trackSpeed);
+        /*
+            Rotation stops when moving b/c it can lead to weird movement errors.
+            Lerp is used because of the nice cinematic effect it creates.
+        */
         //
         Vector3 newPosition = Vector3.Lerp(cameraTransform.position, position, Time.deltaTime * trackSpeed);
         newPosition.y = Mathf.Lerp(cameraTransform.position.y, position.y, Time.deltaTime * trackSpeed);
