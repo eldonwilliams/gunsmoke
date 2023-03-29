@@ -72,32 +72,33 @@ public class CameraFollow : MonoBehaviour
             If no mouse exists, it will be the midpoint between the target's forward vector,
             and a circle of configurable radius.
         */
-        // Vector3 mousePos = Input.mousePosition;
-        // Ray mouseRay = transform.GetComponent<Camera>().ScreenPointToRay(mousePos);
-        // RaycastHit mouseRaycastHit;
-        // // The midpoint between trackedObject.position and mouseRaycastHit.point
-        // Vector3 midpoint;
-        // // The radius of the circle made by trackedObject.position and mouseRaycastHit.point
-        // float radius;
-        // if (Physics.Raycast(mouseRay, out mouseRaycastHit, 30.0f)) {
-        //     Vector3 point = mouseRaycastHit.point;
-        //     point.y = 0;
-        //     midpoint = Vector3Utils.Midpoint(trackedObject.position, point);
-        //     midpoint = Vector3.ClampMagnitude(midpoint, 3.0f);
-        //     // radius of circle formed by two points
-        //     radius = midpoint.magnitude * 2;
-        // } else {
-        //     midpoint = trackedObject.position + new Vector3(1, 0, 1);
-        //     radius = midpoint.magnitude * 2;
-        // }
-        // midpoint.y = 0;
+        Vector3 mousePos = Input.mousePosition;
+        Ray mouseRay = transform.GetComponent<Camera>().ScreenPointToRay(mousePos);
+        RaycastHit mouseRaycastHit;
+        // The midpoint between trackedObject.position and mouseRaycastHit.point
+        Vector3 midpoint;
+        // The radius of the circle made by trackedObject.position and mouseRaycastHit.point
+        float radius;
+        if (Physics.Raycast(mouseRay, out mouseRaycastHit, 30.0f)) {
+            Vector3 point = mouseRaycastHit.point;
+            point.y = 0;
+            midpoint = Vector3Utils.Midpoint(trackedObject.position, point);
+            midpoint = Vector3.ClampMagnitude(midpoint, 3.0f);
+            // radius of circle formed by two points
+            radius = midpoint.magnitude * 2;
+        } else {
+            midpoint = Vector3Utils.Midpoint(trackedObject.position, new Vector3(1, 0, 1));
+            midpoint = Vector3.ClampMagnitude(midpoint, 3.0f);
+            radius = midpoint.magnitude * 2;
+        }
+        midpoint.y = 0;
 
         position = trackedObject.position;
         // Move back by radius, putting this as a point on cylinder where h=inf
-        position -= trackedObject.forward;
+        position -= trackedObject.forward * radius;
         position.y += offsetY;
 
-        rotation = Quaternion.LookRotation(trackedObject.position - transform.position);
+        rotation = Quaternion.LookRotation((trackedObject.position + midpoint) - transform.position);
 
         transform.position = Vector3.Lerp(transform.position, position, trackSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, rotation, trackSpeed * Time.deltaTime);
