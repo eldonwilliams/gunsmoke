@@ -412,11 +412,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   move: 0.5
-  followType: 0
+  followType: 1
   trackedObject: {fileID: 1170030230}
   offsetY: 10
   trackSpeed: 2
-  camera: {fileID: 0}
 --- !u!1001 &1108915678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -480,6 +479,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5119602208081576945, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3961667285025858908, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3827384170040778581, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: -2857749646985758190, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -487,6 +498,42 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
       propertyPath: m_Name
       value: Gun
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2540025632684267574, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2651917783935671757, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034360739384358586, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4302737043207091229, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4595856820445313136, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7510791888867284050, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8892444397686771884, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157093416493969856, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c814ca0109e9b46868d545d3ccbbc680, type: 3}
@@ -503,7 +550,7 @@ GameObject:
   - component: {fileID: 1170030228}
   - component: {fileID: 1170030227}
   - component: {fileID: 1170030231}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
