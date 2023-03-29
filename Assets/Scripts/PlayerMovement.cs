@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     public float playerJumpHeight = 1.0f;
     public float playerCrouchScale = 0.9f;
     public float gravity = -9.81f;
+    public Transform holding;
     private CharacterController controller;
     private Vector3 velocity;
     private bool grounded;
@@ -41,10 +42,12 @@ public class PlayerMovement : MonoBehaviour
         Ray mouseRay = cameraTransform.GetComponent<Camera>().ScreenPointToRay(mousePos);
         RaycastHit hit;
         if (Physics.Raycast(mouseRay, out hit, 30.0f)) {
-            transform.forward = hit.point + transform.position;
+            holding.forward = Vector3Utils.ProjectHorizontally(hit.point - transform.position);
+        } else if (movement != Vector3.zero) {
+            holding.forward = movement;
         }
 
-        // if (movement != Vector3.zero) transform.forward = movement;
+        if (movement != Vector3.zero) transform.forward = movement;
 
         if (Input.GetButtonDown("Jump") && grounded)
             velocity.y += Mathf.Sqrt(playerJumpHeight * -3.0f * gravity);
