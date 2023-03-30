@@ -4,16 +4,36 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public float Speed = 0.5f;
-    public float InitialHealth = 50.0f;
+    /// <summary>
+    ///  The health this enemy has initially
+    /// </summary>
+    [SerializeField, Tooltip("The health this enemy has initially")]
+    private float InitialHealth = 50;
+    
+    /// <summary>
+    ///  The speed this enemy can move
+    /// </summary>
+    [SerializeField, Tooltip("The speed this enemy can move")]
+    private float Speed = 0.5f;
 
-    [SerializeField]
+    /// <summary>
+    ///  A reference to the Player's transform
+    /// </summary>
+    [SerializeField, Tooltip("A reference to the Player's transform")]
     private Transform Player;
-    private float _health;
+
+    /// <summary>
+    ///  The amount of health currently possessed
+    /// </summary>
+    private float health;
+
+    /// <summary>
+    ///  A reference to the CharacterController component made at Start
+    /// </summary>
     private CharacterController controller;
 
     void Awake() {
-        _health = InitialHealth;
+        health = InitialHealth;
     }
 
     void Start() {
@@ -29,11 +49,19 @@ public class EnemyController : MonoBehaviour
         controller.Move(moveDirection);
     }
 
-    float getHealth() {
-        return _health;
+    /// <summary>
+    ///  Gets the current amount of health the Enemy has
+    /// </summary>
+    /// <returns>Current health</returns>
+    public float getHealth() {
+        return health;
     }
 
-    void damage(float damageAmt) {
-        _health -= damageAmt;
+    /// <summary>
+    ///  Damages the enemy by a specified amount, killing the enemy if it is >health
+    /// </summary>
+    /// <param name="damageAmt">The amount of damage to deal</param>
+    public void damage(float damageAmt) {
+        health -= damageAmt;
     }
 }

@@ -5,25 +5,52 @@ using UnityEngine.Events;
 
 public class GunController : MonoBehaviour
 {
-    public TrailRenderer BulletTrail;
-    public Transform BulletSpawnPoint;
-    public Transform BulletTrailSpawnPoint;
-    public float ShootDebounce = 0.5f;
-    public float BulletSpeed = 100;
-    public float FallOffDistance = 10.0f;
+    /// <summary>
+    ///  A reference to a TrailRenderer to be instantiated for bullets
+    /// </summary>
+    [SerializeField, Tooltip("A reference to a TrailRenderer to be instantiated for bullets")]
+    private TrailRenderer BulletTrail;
 
-    private new Camera camera;
+    /// <summary>
+    ///  The origin of bullet rays, but not where they appear to come from
+    /// </summary>
+    [SerializeField, Tooltip("The origin of bullet rays, but not where they appear to come from")]
+    private Transform BulletRayOrigin;
+
+    /// <summary>
+    ///  The origin of bullet graphics, should be the gun tip
+    /// </summary>
+    [SerializeField, Tooltip("The origin of bullet graphics, should be the gun tip")]
+    private Transform BulletTrailSpawnPoint;
+
+    /// <summary>
+    ///  The time between shots
+    /// </summary>
+    [SerializeField, Tooltip("The time between shots")]
+    private float ShootDebounce = 0.5f;
+
+    /// <summary>
+    ///  The speed bullets travel
+    /// </summary>
+    [SerializeField, Tooltip("The speed bullets travel")]
+    private float BulletSpeed = 100;
+
+    /// <summary>
+    ///  How far away bullets can travel
+    /// </summary>
+    [SerializeField, Tooltip("How far away bullets can travel")]
+    private float FallOffDistance = 10.0f;
+
+    /// <summary>
+    ///  The last time the gun was successfully shot, used for debounce
+    /// </summary>
     private float lastShootTime = 0.0f;
-
-    void Awake() {
-        camera = Camera.main;
-    }
 
     void Update() {
         if (!Input.GetButtonDown("Click")) return;
         if (lastShootTime + ShootDebounce > Time.time) return;
 
-        Ray shootingRay = new Ray(BulletSpawnPoint.position, Vector3Utils.ProjectHorizontally(transform.forward));
+        Ray shootingRay = new Ray(BulletRayOrigin.position, Vector3Utils.ProjectHorizontally(transform.forward));
 
         RaycastHit[] hitEnemies = Physics.RaycastAll(shootingRay, FallOffDistance);
         foreach (RaycastHit hitEnemy in hitEnemies)
@@ -42,6 +69,12 @@ public class GunController : MonoBehaviour
         lastShootTime = Time.time;
     }
 
+    /// <summary>
+    ///  Spawns the trail graphics for a bullet, does not deal damage.
+    /// </summary>
+    /// <param name="trail">The trail object</param>
+    /// <param name="hitPoint">The point that was hit</param>
+    /// <returns>An IEnumerator for StartCoroutine</returns>
     private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint) {
         Vector3 startPosition = trail.transform.position;
         float distance = Mathf.Clamp(Vector3.Distance(startPosition, hitPoint), 0, FallOffDistance);
