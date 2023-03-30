@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float playerSpeed = 2.0f;
-    public float playerJumpHeight = 1.0f;
-    public float playerCrouchScale = 0.9f;
-    public float gravity = -9.81f;
-    public Transform holding;
+    [SerializeField]
+    private float playerSpeed = 2.0f;
+    [SerializeField]
+    private float playerJumpHeight = 1.0f;
+    [SerializeField]
+    private float playerCrouchScale = 0.9f;
+    [SerializeField]
+    private float gravity = -9.81f;
+    [SerializeField]
+    private Transform holding;
+    [SerializeField]
+    private float maxMouseDistance = 30.0f;
+
     private CharacterController controller;
     private Vector3 velocity;
     private bool grounded;
@@ -41,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 mousePos = Input.mousePosition;
         Ray mouseRay = cameraTransform.GetComponent<Camera>().ScreenPointToRay(mousePos);
         RaycastHit hit;
-        if (Physics.Raycast(mouseRay, out hit, 30.0f)) {
+        if (Physics.Raycast(mouseRay, out hit, maxMouseDistance)) {
             holding.forward = Vector3Utils.ProjectHorizontally(hit.point - transform.position);
         } else if (movement != Vector3.zero) {
             holding.forward = movement;
