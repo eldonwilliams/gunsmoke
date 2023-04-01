@@ -452,6 +452,11 @@ TrailRenderer:
   m_CorrespondingSourceObject: {fileID: 8487118795882891860, guid: a37d826000c374b85a5dd7e605f32f9c, type: 3}
   m_PrefabInstance: {fileID: 1079175564}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1070059908 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3178944942044122183, guid: 828ea0ca701e748b48f80fab856c06d4, type: 3}
+  m_PrefabInstance: {fileID: 1132233292984473026}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1079175564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -627,6 +632,7 @@ MonoBehaviour:
   playerCrouchScale: 0.9
   gravity: -9.81
   holding: {fileID: 494884882}
+  maxMouseDistance: 30
 --- !u!4 &1221923509 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 593412281221515255, guid: 828ea0ca701e748b48f80fab856c06d4, type: 3}
@@ -691,6 +697,10 @@ PrefabInstance:
       propertyPath: Player
       value: 
       objectReference: {fileID: 1170030230}
+    - target: {fileID: 1325610322515562368, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8152704089251408855, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: m_Name
       value: Enemy
@@ -1055,6 +1065,10 @@ PrefabInstance:
       propertyPath: ShootDebounce
       value: 0.25
       objectReference: {fileID: 0}
+    - target: {fileID: 2075943715017565461, guid: 828ea0ca701e748b48f80fab856c06d4, type: 3}
+      propertyPath: BulletRayOrigin
+      value: 
+      objectReference: {fileID: 1070059908}
     - target: {fileID: 2075943715017565461, guid: 828ea0ca701e748b48f80fab856c06d4, type: 3}
       propertyPath: BulletSpawnPoint
       value: 
