@@ -64,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        // Adds the CharacterController component at runtime and manages it in this script
         controller = gameObject.AddComponent<CharacterController>();
         controller.minMoveDistance = 0;
 
@@ -75,18 +76,24 @@ public class PlayerMovement : MonoBehaviour
         grounded = controller.isGrounded;
         if (grounded && velocity.y < 0) velocity.y = 0;
         
-        // A horizontally projected version of cameraTransform's forward component
+        /*
+            Using the forward and right vectors of the camera (and projecting them so y=0)
+            we can make movement feel more natural where (W) key, for example, will always
+            make the player go forward as seen from the character's perspective
+        */
         Vector3 forward = Vector3Utils.ProjectHorizontally(cameraTransform.forward);
-        // A horizontally projected version of cameraTransform's right component
         Vector3 right = Vector3Utils.ProjectHorizontally(cameraTransform.right);
-        // The movement vector of the character
+        // Where the player is moving
         Vector3 movement = Input.GetAxis("Horizontal") * right + Input.GetAxis("Vertical") * forward;
 
         controller.Move(movement * Time.deltaTime * playerSpeed);
 
-        // The mouses position
+        /*
+            This section of code is for aiming the gun where the mouse is.
+            If the mouse doesn't intersect with anything, the gun will be aimed wherever the 
+            character is walking
+        */
         Vector3 mousePos = Input.mousePosition;
-        // A ray representing the mouse
         Ray mouseRay = cameraTransform.GetComponent<Camera>().ScreenPointToRay(mousePos);
         if (Physics.Raycast(mouseRay, out RaycastHit hit, maxMouseDistance)) {
             holding.forward = Vector3Utils.ProjectHorizontally(hit.point - transform.position);
@@ -94,20 +101,27 @@ public class PlayerMovement : MonoBehaviour
             holding.forward = movement;
         }
 
+        // If we are moving, orient us towards where we are moving
         if (movement != Vector3.zero) transform.forward = movement;
 
+        // If the jump key is pressed, and on the ground, add some velocity on the y axis
         if (Input.GetButtonDown("Jump") && grounded)
-            velocity.y += Mathf.Sqrt(playerJumpHeight * -3.0f * gravity);
+            velocity.y += Mathf.Sqrt(-playerJumpHeight * gravity);
         
-        if (Input.GetButton("Crouch") && transform.localScale == Vector3.one) {
+        // Crouch by scaling the character transform on the y axis
+        if (Input.GetButtonDown("Crouch")) {
             transform.localScale = Vector3.Scale(Vector3.one, new Vector3(1, playerCrouchScale, 1));
             controller.height = 2.0f * playerCrouchScale;
             controller.Move(new Vector3(0, -playerCrouchScale / 2, 0));
-        } else if (!Input.GetButton("Crouch") && transform.localScale != Vector3.one) {
+        }
+        
+        // Un-Crouches by scaling character transform back up
+        if (Input.GetButtonUp("Crouch")) {
             transform.localScale = Vector3.one;
             controller.height = 2.0f;
         }
 
+        // gravity :)
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
