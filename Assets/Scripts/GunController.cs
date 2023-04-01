@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class GunController : MonoBehaviour
 {
@@ -30,6 +30,12 @@ public class GunController : MonoBehaviour
     private float ShootDebounce = 0.5f;
 
     /// <summary>
+    ///  The damage the bullet does to enemies
+    /// </summary>
+    [SerializeField, Tooltip("The damage the bullet does to enemies")]
+    private float BulletDamage = 25;
+
+    /// <summary>
     ///  The speed bullets travel
     /// </summary>
     [SerializeField, Tooltip("The speed bullets travel")]
@@ -44,29 +50,56 @@ public class GunController : MonoBehaviour
     /// <summary>
     ///  The last time the gun was successfully shot, used for debounce
     /// </summary>
-    private float lastShootTime = 0.0f;
+    private float _lastShootTime = 0.0f;
+
+    class RaycastHitComparer : IEqualityComparer<RaycastHit>
+    {
+        public bool Equals(RaycastHit x, RaycastHit y)
+        {
+            Debug.Log(x.transform.Equals(y.transform));
+            return x.transform.Equals(y.transform);
+        }
+
+        /// <summary>
+        ///  Always returns 0 to force check for equality
+        ///  This is not recommended, and a better solution will be found if this becomes a performance bottleneck
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int GetHashCode(RaycastHit obj)
+        {
+            return 0;
+        }
+    }
 
     void Update() {
         if (!Input.GetButtonDown("Click")) return;
-        if (lastShootTime + ShootDebounce > Time.time) return;
+        if (_lastShootTime + ShootDebounce > Time.time) return;
 
         Ray shootingRay = new Ray(BulletRayOrigin.position, Vector3Utils.ProjectHorizontally(transform.forward));
 
-        RaycastHit[] hitEnemies = Physics.RaycastAll(shootingRay, FallOffDistance);
+        List<RaycastHit> hitEnemies = new List<RaycastHit>(Physics.RaycastAll(shootingRay, FallOffDistance));
+        hitEnemies = new List<RaycastHit>(hitEnemies.Distinct(new RaycastHitComparer()));
         foreach (RaycastHit hitEnemy in hitEnemies)
             if (hitEnemy.transform.gameObject.layer == 6)
-                Destroy(hitEnemy.transform.gameObject);
+                onHitEnemy(hitEnemy);
 
         if (Physics.Raycast(shootingRay, out RaycastHit hit, float.MaxValue)) {
             Vector3 hitPoint = hit.point;
             TrailRenderer trail = Instantiate(BulletTrail, BulletTrailSpawnPoint.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, hitPoint));
+            StartCoroutine(spawnTrail(trail, hitPoint));
         } else {
             TrailRenderer trail = Instantiate(BulletTrail, BulletTrailSpawnPoint.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, BulletTrailSpawnPoint.position + transform.forward * FallOffDistance));
+            StartCoroutine(spawnTrail(trail, BulletTrailSpawnPoint.position + transform.forward * FallOffDistance));
         }
 
-        lastShootTime = Time.time;
+        _lastShootTime = Time.time;
+    }
+
+    private void onHitEnemy(RaycastHit enemyHit) {
+        Transform enemyTransform = enemyHit.transform;
+        EnemyController enemyController = enemyTransform.GetComponent<EnemyController>();
+        enemyController.damage(BulletDamage);
     }
 
     /// <summary>
@@ -75,7 +108,7 @@ public class GunController : MonoBehaviour
     /// <param name="trail">The trail object</param>
     /// <param name="hitPoint">The point that was hit</param>
     /// <returns>An IEnumerator for StartCoroutine</returns>
-    private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint) {
+    private IEnumerator spawnTrail(TrailRenderer trail, Vector3 hitPoint) {
         Vector3 startPosition = trail.transform.position;
         float distance = Mathf.Clamp(Vector3.Distance(startPosition, hitPoint), 0, FallOffDistance);
         float remainingDistance = distance;
