@@ -5,44 +5,57 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class CameraFollow : MonoBehaviour
 {
-    // The type of camera following algorithm to use
+    /// <summary>
+    ///  Allows for multiple types of Camera tracking movement
+    ///  Currently, only moving is ever used in game, but stationary and other forms may be implemented or used
+    /// </summary>
     public enum FollowType
     {
-        // This is recommended for moving targets, such as the player. It tracks movement over time.
+        /// <summary>
+        ///  Useful for moving targets, mainly the player
+        /// </summary>
         MOVING,
-        // This is recommended for a stationary or a seldomly moving target, such as a box. It will track movement, but not accurately.
+        /// <summary>
+        ///  Useful for a stationary object, but still will track movement
+        /// </summary>
         STATIONARY,
     }
 
-    // The type of following currently active
+    /// <summary>
+    ///  The currently active follow type
+    /// </summary>
+    [Tooltip("The currently active follow type")]
     public FollowType followType = FollowType.MOVING;
-    // The currently tracked object
-    public Transform trackedObject;
-    // The offset in the +Y direction
-    public float offsetY = 2.0f;
-    // The speed to track the object at
-    public float trackSpeed = 2.0f;
+    
+    /// <summary>
+    ///  The Transform of the trackedObject
+    /// </summary>
+    [SerializeField, Tooltip("The Transform of the trackedObject")]
+    private Transform trackedObject;
+    
+    /// <summary>
+    ///  The max distance the camera's mouse ray will go
+    /// </summary>
+    [SerializeField, Tooltip("The max distance the camera's mouse ray will go")]
+    public float maxMouseDistance = 30;
 
-    /*
-        FOR FollowType.STATIONARY
+    /// <summary>
+    ///  The clamp to the length away the mouse parallax effect will work
+    /// </summary>
+    [SerializeField, Tooltip("The clamp to the length away the mouse parallax effect will work")]
+    public float maxMidpointMagnitude = 3;
 
-        Calculates the Camera's position and rotation.
-        This an instantaneous rate of change, no lerp.
-        First value is Pos, second is Rotation.
-    */
-    private (Vector3, Vector3) calculateCameraPosAndRot() {
-        Vector3 position = trackedObject.position - Vector3Utils.Abs(trackedObject.forward * trackedObject.localScale.magnitude * 3);
-        position.y += offsetY;
-        Vector3 rotation = Quaternion.LookRotation(((trackedObject.forward + trackedObject.position) - position).normalized).eulerAngles;
-        return (position, rotation);
-    }
-
-    void Start()
-    {
-        var (position, rotation) = calculateCameraPosAndRot();
-        transform.position = position;
-        transform.rotation = Quaternion.Euler(rotation);
-    }
+    /// <summary>
+    ///  The offset of the camera in the +y direction
+    /// </summary>
+    [SerializeField, Tooltip("The offset of the camera in the +y direction")]
+    private float offsetY = 2.0f;
+    
+    /// <summary>
+    ///  The speed of the camera
+    /// </summary>
+    [SerializeField, Tooltip("The speed of the camera")]
+    private float trackSpeed = 2.0f;
 
     void Update()
     {
@@ -80,16 +93,16 @@ public class CameraFollow : MonoBehaviour
         Vector3 midpoint;
         // The radius of the circle made by trackedObject.position and mouseRaycastHit.point
         float radius;
-        if (Physics.Raycast(mouseRay, out mouseRaycastHit, 30.0f)) {
+        if (Physics.Raycast(mouseRay, out mouseRaycastHit, maxMouseDistance)) {
             Vector3 point = mouseRaycastHit.point;
             point.y = 0;
             midpoint = Vector3Utils.Midpoint(trackedObject.position, point);
-            midpoint = Vector3.ClampMagnitude(midpoint, 3.0f);
+            midpoint = Vector3.ClampMagnitude(midpoint, maxMidpointMagnitude);
             // radius of circle formed by two points
             radius = midpoint.magnitude * 2;
         } else {
             midpoint = Vector3Utils.Midpoint(trackedObject.position, new Vector3(1, 0, 1));
-            midpoint = Vector3.ClampMagnitude(midpoint, 3.0f);
+            midpoint = Vector3.ClampMagnitude(midpoint, maxMidpointMagnitude);
             radius = midpoint.magnitude * 2;
         }
         midpoint.y = 0;
@@ -106,7 +119,9 @@ public class CameraFollow : MonoBehaviour
     }
 
     private void stationaryUpdate() {
-        var (position, rotation) = calculateCameraPosAndRot();
+        Vector3 position = trackedObject.position - Vector3Utils.Abs(trackedObject.forward * trackedObject.localScale.magnitude * 3);
+        position.y += offsetY;
+        Vector3 rotation = Quaternion.LookRotation(((trackedObject.forward + trackedObject.position) - position).normalized).eulerAngles;
         transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * trackSpeed);
         transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rotation), Time.deltaTime * trackSpeed);
     }
