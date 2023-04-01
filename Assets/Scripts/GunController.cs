@@ -78,7 +78,6 @@ public class GunController : MonoBehaviour
     private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint) {
         Vector3 startPosition = trail.transform.position;
         float distance = Mathf.Clamp(Vector3.Distance(startPosition, hitPoint), 0, FallOffDistance);
-        Debug.Log(distance);
         float remainingDistance = distance;
 
         while (remainingDistance > 0) {
