@@ -398,7 +398,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 70
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -443,10 +443,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c12572d01f8403db526f74ca281783, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followType: 0
-  trackedObject: {fileID: 1170030230}
-  offsetY: 8
-  trackSpeed: 2
+  ActiveFollowType: 0
+  TrackedObject: {fileID: 1170030230}
+  MaxMouseDistance: 30
+  MaxMidpointMagnitude: 3
+  OffsetY: 8
+  TrackSpeed: 2
 --- !u!96 &1004005322 stripped
 TrailRenderer:
   m_CorrespondingSourceObject: {fileID: 8487118795882891860, guid: a37d826000c374b85a5dd7e605f32f9c, type: 3}
@@ -627,12 +629,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 382b76542d92e4576921db0b1cf227e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 12
-  playerJumpHeight: 1
-  playerCrouchScale: 0.9
-  gravity: -9.81
-  holding: {fileID: 494884882}
-  maxMouseDistance: 30
+  PlayerSpeed: 10
+  PlayerJumpHeight: 3
+  PlayerCrouchScale: 0.9
+  Gravity: -9.81
+  Holding: {fileID: 494884882}
+  MaxMouseDistance: 30
 --- !u!4 &1221923509 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 593412281221515255, guid: 828ea0ca701e748b48f80fab856c06d4, type: 3}
@@ -651,7 +653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 12031039354236059, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.01152
+      value: 7.47
       objectReference: {fileID: 0}
     - target: {fileID: 12031039354236059, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: m_LocalPosition.y
@@ -659,7 +661,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 12031039354236059, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.77314
+      value: 11.69
       objectReference: {fileID: 0}
     - target: {fileID: 12031039354236059, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: m_LocalRotation.w
@@ -691,7 +693,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1325610322515562368, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: Speed
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1325610322515562368, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: Player
@@ -699,7 +701,11 @@ PrefabInstance:
       objectReference: {fileID: 1170030230}
     - target: {fileID: 1325610322515562368, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1325610322515562368, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
+      propertyPath: InitialHealth
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 8152704089251408855, guid: 7e28f0ce7aff042ee8f6760fa9841028, type: 3}
       propertyPath: m_Name
