@@ -25,41 +25,41 @@ public class CameraFollow : MonoBehaviour
     ///  The currently active follow type
     /// </summary>
     [Tooltip("The currently active follow type")]
-    public FollowType followType = FollowType.MOVING;
+    public FollowType ActiveFollowType = FollowType.MOVING;
     
     /// <summary>
     ///  The Transform of the trackedObject
     /// </summary>
     [SerializeField, Tooltip("The Transform of the trackedObject")]
-    private Transform trackedObject;
+    private Transform TrackedObject;
     
     /// <summary>
     ///  The max distance the camera's mouse ray will go
     /// </summary>
     [SerializeField, Tooltip("The max distance the camera's mouse ray will go")]
-    public float maxMouseDistance = 30;
+    public float MaxMouseDistance = 30;
 
     /// <summary>
     ///  The clamp to the length away the mouse parallax effect will work
     /// </summary>
     [SerializeField, Tooltip("The clamp to the length away the mouse parallax effect will work")]
-    public float maxMidpointMagnitude = 3;
+    public float MaxMidpointMagnitude = 3;
 
     /// <summary>
     ///  The offset of the camera in the +y direction
     /// </summary>
     [SerializeField, Tooltip("The offset of the camera in the +y direction")]
-    private float offsetY = 2.0f;
+    private float OffsetY = 2.0f;
     
     /// <summary>
     ///  The speed of the camera
     /// </summary>
     [SerializeField, Tooltip("The speed of the camera")]
-    private float trackSpeed = 2.0f;
+    private float TrackSpeed = 2.0f;
 
     void Update()
     {
-        switch (followType)
+        switch (ActiveFollowType)
         {
             case FollowType.MOVING:
                 movingUpdate();
@@ -93,37 +93,37 @@ public class CameraFollow : MonoBehaviour
         Vector3 midpoint;
         // The radius of the circle made by trackedObject.position and mouseRaycastHit.point
         float radius;
-        if (Physics.Raycast(mouseRay, out mouseRaycastHit, maxMouseDistance)) {
+        if (Physics.Raycast(mouseRay, out mouseRaycastHit, MaxMouseDistance)) {
             Vector3 point = mouseRaycastHit.point;
             point.y = 0;
-            midpoint = Vector3Utils.Midpoint(trackedObject.position, point);
-            midpoint = Vector3.ClampMagnitude(midpoint, maxMidpointMagnitude);
+            midpoint = Vector3Utils.Midpoint(TrackedObject.position, point);
+            midpoint = Vector3.ClampMagnitude(midpoint, MaxMidpointMagnitude);
             // radius of circle formed by two points
             radius = midpoint.magnitude * 2;
         } else {
-            midpoint = Vector3Utils.Midpoint(trackedObject.position, new Vector3(1, 0, 1));
-            midpoint = Vector3.ClampMagnitude(midpoint, maxMidpointMagnitude);
+            midpoint = Vector3Utils.Midpoint(TrackedObject.position, new Vector3(1, 0, 1));
+            midpoint = Vector3.ClampMagnitude(midpoint, MaxMidpointMagnitude);
             radius = midpoint.magnitude * 2;
         }
         midpoint.y = 0;
 
-        position = trackedObject.position;
+        position = TrackedObject.position;
         // Move back by radius, putting this as a point on cylinder where h=inf
-        position -= trackedObject.forward * radius;
-        position.y += offsetY;
+        position -= TrackedObject.forward * radius;
+        position.y += OffsetY;
 
-        rotation = Quaternion.LookRotation((trackedObject.position + midpoint) - transform.position);
+        rotation = Quaternion.LookRotation((TrackedObject.position + midpoint) - transform.position);
 
-        transform.position = Vector3.Lerp(transform.position, position, trackSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, trackSpeed * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, position, TrackSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, TrackSpeed * Time.deltaTime);
     }
 
     private void stationaryUpdate() {
-        Vector3 position = trackedObject.position - Vector3Utils.Abs(trackedObject.forward * trackedObject.localScale.magnitude * 3);
-        position.y += offsetY;
-        Vector3 rotation = Quaternion.LookRotation(((trackedObject.forward + trackedObject.position) - position).normalized).eulerAngles;
-        transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * trackSpeed);
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rotation), Time.deltaTime * trackSpeed);
+        Vector3 position = TrackedObject.position - Vector3Utils.Abs(TrackedObject.forward * TrackedObject.localScale.magnitude * 3);
+        position.y += OffsetY;
+        Vector3 rotation = Quaternion.LookRotation(((TrackedObject.forward + TrackedObject.position) - position).normalized).eulerAngles;
+        transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * TrackSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rotation), Time.deltaTime * TrackSpeed);
     }
 
     // The Old Moving Update
