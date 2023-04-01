@@ -43,10 +43,8 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        Vector3 moveDirection = Vector3.Lerp(transform.position, Player.position, Speed * Time.deltaTime);
-        moveDirection.Normalize();
-        Debug.Log(moveDirection);
-        controller.Move(moveDirection);
+        Vector3 moveDirection = (Player.position - transform.position).normalized;
+        controller.Move(moveDirection * Speed * Time.deltaTime);
     }
 
     /// <summary>
