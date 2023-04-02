@@ -56,7 +56,6 @@ public class GunController : MonoBehaviour
     {
         public bool Equals(RaycastHit x, RaycastHit y)
         {
-            Debug.Log(x.transform.Equals(y.transform));
             return x.transform.Equals(y.transform);
         }
 
@@ -68,7 +67,7 @@ public class GunController : MonoBehaviour
         /// <returns></returns>
         public int GetHashCode(RaycastHit obj)
         {
-            return 0;
+            return obj.transform.GetHashCode();
         }
     }
 
@@ -98,8 +97,8 @@ public class GunController : MonoBehaviour
 
     private void onHitEnemy(RaycastHit enemyHit) {
         Transform enemyTransform = enemyHit.transform;
-        EnemyController enemyController = enemyTransform.GetComponent<EnemyController>();
-        enemyController.damage(BulletDamage);
+        EntityEnemy enemyController = enemyTransform.GetComponent<EntityEnemy>();
+        enemyController.DealDamage(BulletDamage);
     }
 
     /// <summary>

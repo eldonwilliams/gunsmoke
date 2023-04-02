@@ -1,20 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class PlayerMovement : MonoBehaviour
+public class EntityPlayer : DamageableEntity
 {
+    /// <summary>
+    ///  A cache of the EntityPlayer for GetPlayer
+    ///  This is like a psuedo-singleton
+    /// </summary>
+    private static EntityPlayer Player;
+
+    /// <summary>
+    ///  Gets the EntityPlayer object of the player
+    /// </summary>
+    /// <returns></returns>
+    public static EntityPlayer GetPlayer() {
+        if (Player) return Player;
+
+        GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
+
+        foreach (GameObject rootObject in rootObjects)
+        {
+            EntityPlayer player = rootObject.GetComponentInChildren<EntityPlayer>();
+            if (player != null) return player;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    ///  Gets the Transform of the player
+    /// </summary>
+    /// <returns>the transform of the player</returns>
+    public static Transform GetCharacter() {
+        return GetPlayer().transform;
+    }
+
+
     /// <summary>
     ///  The player's speed
     /// </summary>
     [SerializeField, Tooltip("The player's speed")]
-    private float PlayerSpeed = 2.0f;
+    private float PlayerSpeed = 8.0f;
 
     /// <summary>
     ///  How high the player jumps
     /// </summary>
     [SerializeField, Tooltip("How high the player jumps")]
-    private float PlayerJumpHeight = 1.0f;
+    private float PlayerJumpHeight = 3.0f;
 
     /// <summary>
     ///  The percentage scale (on y axis) the player is changed when in crouch mode
