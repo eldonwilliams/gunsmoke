@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering.PostProcessing;
 
 public class EntityPlayer : DamageableEntity
 {
@@ -73,6 +74,12 @@ public class EntityPlayer : DamageableEntity
     /// </summary>
     [SerializeField, Tooltip("The maximum distance the mouse will accept raycasts before not pointing the held object")]
     private float MaxMouseDistance = 30.0f;
+
+    /// <summary>
+    ///  A reference to the post processing profile
+    /// </summary>
+    [SerializeField, Tooltip("A reference to the post processing profile")]
+    private PostProcessProfile mainProfile;
     
     // Private
 
@@ -96,6 +103,11 @@ public class EntityPlayer : DamageableEntity
     /// </summary>
     private Transform _cameraTransform;
 
+    /// <summary>
+    ///  The vignette effect, used for hurt effect
+    /// </summary>
+    private Vignette _vignette;
+
     void Start()
     {
         // Adds the CharacterController component at runtime and manages it in this script
@@ -104,9 +116,21 @@ public class EntityPlayer : DamageableEntity
 
         _cameraTransform = Camera.main.transform;
 
+        mainProfile.TryGetSettings<Vignette>(out _vignette);
+
         OnDeath += () => {
             Debug.Log("You died :(");
         };
+
+        OnHurt += (_damage) => {
+            StartCoroutine(HandleHurt());
+        };
+    }
+
+    IEnumerator HandleHurt() {
+        _vignette.intensity.value = 0.3f;
+        yield return new WaitForSeconds(1);
+        _vignette.intensity.value = 0.23f;
     }
 
     protected override float getInitialHealth()
