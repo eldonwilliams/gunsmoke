@@ -103,10 +103,21 @@ public class EntityPlayer : DamageableEntity
         _controller.minMoveDistance = 0;
 
         _cameraTransform = Camera.main.transform;
+
+        OnDeath += () => {
+            Debug.Log("You died :(");
+        };
+    }
+
+    protected override float getInitialHealth()
+    {
+        return 50;
     }
 
     void Update()
     {
+        if (IsDead()) return;
+
         _grounded = _controller.isGrounded;
         if (_grounded && _velocity.y < 0) _velocity.y = 0;
         

@@ -50,11 +50,26 @@ public class EntityEnemy : DamageableEntity
     /// </summary>
     private IEnumerator _damageColorEnumerator;
 
+    /// <summary>
+    ///  The time of the last successful attack
+    ///  Used for debounce
+    /// </summary>
+    private float _lastAttack = 0;
+
+    /// <summary>
+    ///  the max distance the enemy can attack
+    /// </summary>
+    private float _attackRange = 1.5f;
+
     void Start()
-    {
+    {   
+        // Make controller, minMoveDistance to mix grounded bug
         controller = gameObject.AddComponent<CharacterController>();
         controller.minMoveDistance = 0;
 
+        /*
+            Make a new material for this entity, for the color effect
+        */
         MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
         Material defaultMaterial = renderer.material;
         _material = new Material(defaultMaterial);
@@ -63,6 +78,9 @@ public class EntityEnemy : DamageableEntity
 
         Player = EntityPlayer.GetCharacter();
 
+        /*
+            Setup events for the effects
+        */
         OnHurt += (_damage) =>
         {
             if (_damageColorEnumerator != null)
@@ -79,6 +97,14 @@ public class EntityEnemy : DamageableEntity
         if (IsDead()) return;
         Vector3 moveDirection = (Player.position - transform.position).normalized;
         controller.Move(moveDirection * Description.Speed * Time.deltaTime);
+
+        if (_lastAttack + 1 / Description.Damage.HitFrequency <= Time.time) TryAttack();
+    }
+
+    private void TryAttack() {
+        if (Vector3.Distance(transform.position, Player.position) > _attackRange) return;
+        _lastAttack = Time.time;
+        EntityPlayer.GetPlayer().DealDamage(Description.Damage.PerHit);
     }
 
     protected override float getInitialHealth()
