@@ -79,9 +79,12 @@ public class GunController : MonoBehaviour
 
         List<RaycastHit> hitEnemies = new List<RaycastHit>(Physics.RaycastAll(shootingRay, FallOffDistance));
         hitEnemies = new List<RaycastHit>(hitEnemies.Distinct(new RaycastHitComparer()));
-        foreach (RaycastHit hitEnemy in hitEnemies)
-            if (hitEnemy.transform.gameObject.layer == 6)
+        foreach (RaycastHit hitEnemy in hitEnemies) {
+            if (hitEnemy.transform.gameObject.layer == 6) {
                 onHitEnemy(hitEnemy);
+                StartCoroutine(spawnHitBillboard(hitEnemy.point, BulletDamage.ToString()));
+            }
+        }
 
         if (Physics.Raycast(shootingRay, out RaycastHit hit, float.MaxValue)) {
             Vector3 hitPoint = hit.point;
@@ -120,5 +123,9 @@ public class GunController : MonoBehaviour
         }
 
         Destroy(trail.gameObject, trail.time);
+    }
+
+    private IEnumerator spawnHitBillboard(Vector3 enemy, string text) {
+
     }
 }
