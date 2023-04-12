@@ -64,16 +64,16 @@ public class EntityPlayer : DamageableEntity
     private float Gravity = -9.81f;
 
     /// <summary>
-    ///  Max distance the mouse will accept raycasts beforenot pointing the held object
-    /// </summary>
-    [SerializeField, Tooltip("The maximum distance the mouse will accept raycasts before not pointing the held object")]
-    private float MaxMouseDistance = 30.0f;
-
-    /// <summary>
     ///  A reference to the transform  of the holding
     /// </summary>
     [SerializeField, Tooltip("A reference to the transform of the holding")]
     private Transform Holding;
+
+    /// <summary>
+    ///  Max distance the mouse will accept raycasts beforenot pointing the held object
+    /// </summary>
+    [SerializeField, Tooltip("The maximum distance the mouse will accept raycasts before not pointing the held object")]
+    private float MaxMouseDistance = 30.0f;
 
     /// <summary>
     ///  A reference to the post processing profile
