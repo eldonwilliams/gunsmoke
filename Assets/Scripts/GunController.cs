@@ -126,6 +126,6 @@ public class GunController : MonoBehaviour
     }
 
     private IEnumerator spawnHitBillboard(Vector3 enemy, string text) {
-
+        yield return null;
     }
 }
