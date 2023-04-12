@@ -43,15 +43,33 @@ public interface IDamageableEntity : IEntity
 public abstract class DamageableEntity : Entity, IDamageableEntity
 {
     /// <summary>
+    ///  A private copy of the health this entity has
+    /// </summary>
+    private float _health;
+
+    /// <summary>
     ///  The amount of health this entity has
     /// </summary>
-    protected float _health;
+    protected float Health
+    {
+        get => _health;
+        set {
+            _health = value;
+            OnHealthUpdate?.Invoke(value);
+        }
+    }
 
     /// <summary>
     ///  When entity hurt
     /// </summary>
     /// <param name="damageAmount">The amount of damage taken</param>
     public delegate void HurtEvent(float damageAmount);
+
+    /// <summary>
+    ///  When entity health changes at all
+    /// </summary>
+    /// <param name="newHealth"></param>
+    public delegate void HealthUpdateEvent(float newHealth);
 
     /// <summary>
     ///  When entity dies
@@ -64,12 +82,17 @@ public abstract class DamageableEntity : Entity, IDamageableEntity
     public event HurtEvent OnHurt;
 
     /// <summary>
+    ///  When entity health changes at all
+    /// </summary>
+    public event HealthUpdateEvent OnHealthUpdate;
+
+    /// <summary>
     ///  When this entity dies
     /// </summary>
     public event DeathEvent OnDeath;
 
     protected virtual void Awake() {
-        _health = getInitialHealth();
+        Health = getInitialHealth();
     }
     
     /// <summary>
@@ -82,18 +105,18 @@ public abstract class DamageableEntity : Entity, IDamageableEntity
 
     public bool IsDead()
     {
-        return _health <= 0;
+        return Health <= 0;
     }
 
     public float GetHealth()
     {
-        return _health;
+        return Health;
     }
 
     public void DealDamage(float amount)
     {
         if (IsDead()) return;
-        _health = Mathf.Clamp(_health - amount, 0, float.MaxValue);
+        Health = Mathf.Clamp(Health - amount, 0, float.MaxValue);
         if (IsDead()) {
             OnDeath?.Invoke();
         } else {
@@ -103,11 +126,11 @@ public abstract class DamageableEntity : Entity, IDamageableEntity
 
     public void Heal(float amount, bool clamp = true)
     {
-        _health = Mathf.Clamp(_health + amount, 0, clamp ? getInitialHealth() : float.MaxValue);
+        Health = Mathf.Clamp(Health + amount, 0, clamp ? getInitialHealth() : float.MaxValue);
     }
 
     public bool IsDamageDeadly(float amount)
     {
-        return _health - amount <= 0;
+        return Health - amount <= 0;
     }
 }
