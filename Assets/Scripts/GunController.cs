@@ -82,7 +82,7 @@ public class GunController : MonoBehaviour
         foreach (RaycastHit hitEnemy in hitEnemies) {
             if (hitEnemy.transform.gameObject.layer == 6) {
                 onHitEnemy(hitEnemy);
-                StartCoroutine(spawnHitBillboard(hitEnemy.point, BulletDamage.ToString()));
+                ScreenSpacedUIElement.SpawnDamageIndicator(hitEnemy.point, BulletDamage.ToString());
             }
         }
 
@@ -123,9 +123,5 @@ public class GunController : MonoBehaviour
         }
 
         Destroy(trail.gameObject, trail.time);
-    }
-
-    private IEnumerator spawnHitBillboard(Vector3 enemy, string text) {
-        yield return null;
     }
 }
