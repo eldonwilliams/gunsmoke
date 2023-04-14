@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.PostProcessing;
 
 public class EntityPlayer : DamageableEntity
@@ -18,16 +17,9 @@ public class EntityPlayer : DamageableEntity
     /// <returns></returns>
     public static EntityPlayer GetPlayer() {
         if (Player) return Player;
-
-        GameObject[] rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-
-        foreach (GameObject rootObject in rootObjects)
-        {
-            EntityPlayer player = rootObject.GetComponentInChildren<EntityPlayer>();
-            if (player != null) return player;
-        }
-
-        return null;
+        
+        Player = UnityUtil.GetRootComponent<EntityPlayer>();
+        return Player;
     }
 
     /// <summary>
