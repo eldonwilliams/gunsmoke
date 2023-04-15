@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ScreenSpaceController : MonoBehaviour
 {
-    [SerializeField, InspectorName("Billboard Prefab"), Tooltip("A reference to the prefab for the billboard")]
+    [SerializeField, Tooltip("A reference to the prefab for the billboard")]
     private GameObject _billboardPrefab;
 
-    [SerializeField, InspectorName("Damage Indicator Canvas"), Tooltip("A reference to the canvas for damage indicators")]
+    [SerializeField, Tooltip("A reference to the canvas for damage indicators")]
     private GameObject _damageIndicatorCanvas;
 
     /// <summary>
