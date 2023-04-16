@@ -18,6 +18,13 @@ public interface IDamageableEntity : IEntity
     public float GetHealth();
 
     /// <summary>
+    ///  How much health can this entity have?
+    ///  Note: this is not a hard limit.
+    /// </summary>
+    /// <returns>Max health</returns>
+    public float GetMaxHealth();
+
+    /// <summary>
     ///  Is the given amount of damage able to cause death
     /// </summary>
     /// <param name="amount">the amount of damage</param>
@@ -111,6 +118,11 @@ public abstract class DamageableEntity : Entity, IDamageableEntity
     public float GetHealth()
     {
         return Health;
+    }
+
+    public float GetMaxHealth()
+    {
+        return getInitialHealth();
     }
 
     public void DealDamage(float amount)
