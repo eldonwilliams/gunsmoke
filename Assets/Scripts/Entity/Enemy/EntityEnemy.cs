@@ -26,6 +26,12 @@ public class EntityEnemy : DamageableEntity
     private float AnimationLength = 0.25f;
 
     /// <summary>
+    ///  Modifier for gravity
+    /// </summary>
+    [SerializeField, Tooltip("The modifier for gravity")]
+    private float GravityModifier = -9.81f;
+
+    /// <summary>
     ///  The initial color of the enemy controller
     /// </summary>
     private Color _initialColor;
@@ -97,6 +103,7 @@ public class EntityEnemy : DamageableEntity
         if (IsDead()) return;
         Vector3 moveDirection = (Player.position - transform.position).normalized;
         controller.Move(moveDirection * Description.Speed * Time.deltaTime);
+        controller.Move(new Vector3(0, GravityModifier * Time.deltaTime));
 
         if (_lastAttack + 1 / Description.Damage.HitFrequency <= Time.time) TryAttack();
     }
