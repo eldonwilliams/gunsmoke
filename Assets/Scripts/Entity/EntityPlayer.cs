@@ -42,7 +42,7 @@ public class EntityPlayer : DamageableEntity
     /// </summary>
     [SerializeField, Tooltip("How high the player jumps")]
     private float PlayerJumpHeight = 3.0f;
-
+    
     /// <summary>
     ///  The percentage scale (on y axis) the player is changed when in crouch mode
     /// </summary>
