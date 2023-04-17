@@ -32,6 +32,9 @@ public class LeftHandHUDRender : MonoBehaviour
 
     private void UpdateDisplays() {
         _healthDisplay.GetComponentInChildren<TMP_Text>().text = _player.GetHealth().ToString();
+        _healthDisplay.Find("Fill").LeanScaleX(
+            _player.GetHealth() / _player.GetMaxHealth(),
+            0.2f).setEaseOutQuad();
         // TODO: Add damageDisplay to UpdateDisplays method
         _damageDisplay.GetComponentInChildren<TMP_Text>().text = "10";
     }
