@@ -46,8 +46,9 @@ public class BasicPlayerUpgrade : ScriptableObject
 {
     static BasicPlayerUpgrade[] BasicPlayerUpgrades;
 
-    static public BasicPlayerUpgrade[] GetBasicPlayerUpgrades() {
-        
+    static public BasicPlayerUpgrade[] GetBasicPlayerUpgrades()
+    {
+        return Resources.LoadAll<BasicPlayerUpgrade>("Config/PlayerUpgrades");
     }
 
     /// <summary>
@@ -61,15 +62,14 @@ public class BasicPlayerUpgrade : ScriptableObject
     public int Price;
 
     /// <summary>
-    ///  What Upgrades is this on dependent on?
+    ///  What upgrades are required for this one to become purchasable
     /// </summary>
     public List<BasicPlayerUpgrade> Requirements
     {
         get => _requirements;
         private set
         {
-            foreach (BasicPlayerUpgrade item in _requirements) item.Dependents.Remove(this);
-            foreach (BasicPlayerUpgrade item in value) item.Dependents.Add(this);
+            reconcileDependencies(value);
             _requirements = value;
         }
     }
@@ -77,7 +77,6 @@ public class BasicPlayerUpgrade : ScriptableObject
     /// <summary>
     ///  What upgrades does this unlock?
     /// </summary>
-    //[System.NonSerialized
     public List<BasicPlayerUpgrade> Dependents = new List<BasicPlayerUpgrade>();
 
     /// <summary>
@@ -96,11 +95,19 @@ public class BasicPlayerUpgrade : ScriptableObject
     [SerializeField]
     private List<BasicPlayerUpgrade> _requirements = new List<BasicPlayerUpgrade>();
 
+    /// <summary>
+    ///  Is the purchase unlocked
+    /// </summary>
+    /// <returns></returns>
     public bool isUnlocked()
     {
         return false;
     }
 
+    /// <summary>
+    ///  Can this upgrade be purchased?
+    /// </summary>
+    /// <returns></returns>
     public bool canPurchase()
     {
         if (isUnlocked()) return false;
@@ -111,18 +118,28 @@ public class BasicPlayerUpgrade : ScriptableObject
         return true;
     }
 
-#if UNITY_EDITOR
-    public void updateDependents(List<BasicPlayerUpgrade> _for)
+    /// <summary>
+    ///  Updates the requirement and dependents list when requirements change,
+    /// </summary>
+    /// <param name="newDependencies">either the current requirements or a new set (if setter)</param>
+    public void reconcileDependencies(List<BasicPlayerUpgrade> newDependencies)
     {
-        if (_for == Requirements) return;
-
-        foreach (BasicPlayerUpgrade item in _requirements)
+        // If no change, don't calculate changes
+        if (newDependencies == Requirements) return;
+        
+        // Remove ourself as a dependent from all requirements
+        // null-check first
+        foreach (BasicPlayerUpgrade item in _requirements) 
             if (item != null)
                 item.Dependents.Remove(this);
 
-        foreach (BasicPlayerUpgrade item in _for) item.Dependents.Add(this);
+        // Add back with the new dependencies
+        foreach (BasicPlayerUpgrade item in newDependencies) {
+            if (item == this)
+                return;
+            item.Dependents.Add(this);
+        }
     }
-#endif
 }
 
 [CustomEditor(typeof(BasicPlayerUpgrade))]
@@ -158,19 +175,13 @@ public class BasicPlayerUpgradeEditor : Editor
 
         EditorGUILayout.LabelField("Prerequisite Config");
 
+        // If requirements change, we must reconcile the dependents variable for the other upgrades
         EditorGUI.BeginChangeCheck();
         EditorGUILayout.PropertyField(requirements, new GUIContent("Requirements", "The required upgrades for this one to be purchaseable"));
         if (EditorGUI.EndChangeCheck())
-        {
-            List<BasicPlayerUpgrade> serializedRequirementsValue = new List<BasicPlayerUpgrade>();
-            for (int i = 0; i < requirements.arraySize; i++)
-            {
-                var current = (BasicPlayerUpgrade)requirements.GetArrayElementAtIndex(i).objectReferenceValue;
-                if (current != null) serializedRequirementsValue.Add(current);
-            }
-            targetedUpgrade.updateDependents(serializedRequirementsValue);
-        }
+            targetedUpgrade.reconcileDependencies(getSerializedList<BasicPlayerUpgrade>(requirements));
 
+        // Disable dependents so it is not changed, it should be read only
         EditorGUI.BeginDisabledGroup(true);
         EditorGUILayout.PropertyField(dependents, new GUIContent("Dependents", "The upgrades that require this one to be unlocked"));
         EditorGUI.EndDisabledGroup();
@@ -180,6 +191,27 @@ public class BasicPlayerUpgradeEditor : Editor
         EditorGUILayout.PropertyField(image, new GUIContent("Image", "The image associated with the upgrade"));
         EditorGUILayout.PropertyField(nameProperty, new GUIContent("Name", "The name of the upgrade, as it shows up in the purchase ui"));
 
+        // Add a button to manually reconcile dependencies, incase something messes up
+        if (GUILayout.Button("Reconcile Dependencies"))
+            targetedUpgrade.reconcileDependencies(getSerializedList<BasicPlayerUpgrade>(requirements));
+
         serializedObject.ApplyModifiedProperties();
+    }
+
+    /// <summary>
+    ///  Makes a list from a serializedproperty that is a list.
+    ///  The Type must be a object reference, but may add more overloads as needed
+    /// </summary>
+    /// <param name="array">The SerializedProperty containing the array</param>
+    /// <typeparam name="T">The type the serializedproperty contains</typeparam>
+    /// <returns>A List object from the SerializedProperty</returns>
+    private List<T> getSerializedList<T>(SerializedProperty array) where T : Object {
+        List<T> serializedArrayValue = new List<T>();
+        for (int i = 0; i < requirements.arraySize; i++)
+        {
+            var current = (T)requirements.GetArrayElementAtIndex(i).objectReferenceValue;
+            if (current != null) serializedArrayValue.Add(current);
+        }
+        return serializedArrayValue;
     }
 }
