@@ -218,9 +218,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BulletTrail: {fileID: 0}
-  BulletSpawnPoint: {fileID: 0}
+  BulletRayOrigin: {fileID: 0}
   BulletTrailSpawnPoint: {fileID: 3178944942044122183}
   ShootDebounce: 0.5
+  BulletDamage: 25
   BulletSpeed: 100
   FallOffDistance: 10
 --- !u!4 &593412281221515255 stripped
