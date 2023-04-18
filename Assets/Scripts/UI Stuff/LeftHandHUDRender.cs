@@ -55,22 +55,12 @@ public class LeftHandHUDRender : MonoBehaviour
 
     private bool _hidden = false;
 
-    IEnumerator Start()
+    void Start()
     {
         _player = EntityPlayer.GetPlayer();
 
         UpdateDisplays();
         _player.OnHealthUpdate += (float _) => UpdateDisplays();
-
-
-        yield return new WaitForSeconds(3);
-        Hide();
-        yield return new WaitForSeconds(1);
-        Show();
-        yield return new WaitForSeconds(1);
-        Hide();
-        yield return new WaitForSeconds(1);
-        Show();
     }
 
     public void Hide()

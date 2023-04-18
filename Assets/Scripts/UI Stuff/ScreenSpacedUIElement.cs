@@ -5,15 +5,21 @@ using TMPro;
 
 public class ScreenSpacedUIElement : MonoBehaviour
 {
+    static GameObject _billboardPrefab;
+    static Transform _damageIndicatorCanvas;
 
     public static void SpawnDamageIndicator(Vector3 position, string damageText) {
-        ScreenSpaceController controller = UnityUtil.GetRootComponent<ScreenSpaceController>();
+        if (_billboardPrefab == null)
+            _billboardPrefab = Resources.Load<GameObject>("Prefab/DamageIndicator");
+        
+        if (_damageIndicatorCanvas == null)
+            _damageIndicatorCanvas = GameObject.FindWithTag("DamageIndicatorCanvas").transform;
 
         GameObject billboardInstance = Instantiate(
-            controller.BillboardPrefab,
+            _billboardPrefab,
             position,
             Quaternion.identity,
-            controller.DamageIndicatorCanvas.transform);
+            _damageIndicatorCanvas);
         
         billboardInstance.GetComponent<TMP_Text>().text = damageText;
         billboardInstance.GetComponent<DamageIndicatorScreenSpacedUIElement>().TargetPoint = position;
