@@ -67,6 +67,11 @@ public class EntityEnemy : DamageableEntity
     /// </summary>
     private float _attackRange = 1.5f;
 
+    /// <summary>
+    ///  A reference to the SaveData
+    /// </summary>
+    private SaveData _save;
+
     void Start()
     {   
         // Make controller, minMoveDistance to mix grounded bug
@@ -84,6 +89,8 @@ public class EntityEnemy : DamageableEntity
 
         Player = EntityPlayer.GetCharacter();
 
+        _save = SaveDataManager.GetSaveData();
+
         /*
             Setup events for the effects
         */
@@ -96,6 +103,9 @@ public class EntityEnemy : DamageableEntity
         };
 
         OnDeath += () => StartCoroutine(deathShrinkEffect());
+        OnDeath += () => {
+            _save.alienDNA++;
+        };
     }
 
     void Update()

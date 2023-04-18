@@ -44,7 +44,7 @@ public class SaveDataManager : MonoBehaviour
 
     private float _lastSave;
 
-    void Start() {
+    void Awake() {
         _save = SaveData.GetSaveFromFile(SavePath);
     }
 

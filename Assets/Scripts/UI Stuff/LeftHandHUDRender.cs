@@ -38,15 +38,16 @@ public class LeftHandHUDRender : MonoBehaviour
     /// </summary>
     private EntityPlayer _player;
 
+    private SaveData _save;
+
     /// <summary>
     ///  Is the HUD shown?
     /// </summary>
-    [HideInInspector]
     public bool Hidden
     {
         get => _hidden;
         set
-        {   
+        {
             if (value == true) Hide();
             else Show();
             _hidden = value;
@@ -58,6 +59,7 @@ public class LeftHandHUDRender : MonoBehaviour
     void Start()
     {
         _player = EntityPlayer.GetPlayer();
+        _save = SaveDataManager.GetSaveData();
 
         UpdateDisplays();
         _player.OnHealthUpdate += (float _) => UpdateDisplays();
@@ -80,6 +82,6 @@ public class LeftHandHUDRender : MonoBehaviour
             _player.GetHealth() / _player.GetMaxHealth(),
             0.2f).setEaseOutQuad();
         // TODO: Add damageDisplay to UpdateDisplays method
-        _damageDisplay.GetComponentInChildren<TMP_Text>().text = "10";
+        _damageDisplay.GetComponentInChildren<TMP_Text>().text = _save.alienDNA.ToString();
     }
 }
