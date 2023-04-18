@@ -66,7 +66,7 @@ public class EnemySpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _enemyPrefab = Resources.Load<GameObject>("EnemyPrefab");
+        _enemyPrefab = Resources.Load<GameObject>("Prefab/Enemy");
 
         if (SpawnTime.min == 0 && SpawnTime.max == 0)
         {
