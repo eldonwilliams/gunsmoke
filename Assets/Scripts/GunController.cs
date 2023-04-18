@@ -5,11 +5,7 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    /// <summary>
-    ///  A reference to a TrailRenderer to be instantiated for bullets
-    /// </summary>
-    [SerializeField, Tooltip("A reference to a TrailRenderer to be instantiated for bullets")]
-    private TrailRenderer BulletTrail;
+    
 
     /// <summary>
     ///  The origin of bullet rays, but not where they appear to come from
@@ -48,9 +44,19 @@ public class GunController : MonoBehaviour
     private float FallOffDistance = 10.0f;
 
     /// <summary>
+    ///  The trail the bullet will render with
+    /// </summary>
+    private TrailRenderer _trail;
+
+    /// <summary>
     ///  The last time the gun was successfully shot, used for debounce
     /// </summary>
     private float _lastShootTime = 0.0f;
+
+    void Start() {
+        var bullet = Resources.Load<GameObject>("Prefab/Bullet");
+        _trail = bullet.GetComponent<TrailRenderer>();
+    }
 
     class RaycastHitComparer : IEqualityComparer<RaycastHit>
     {
@@ -88,10 +94,10 @@ public class GunController : MonoBehaviour
 
         if (Physics.Raycast(shootingRay, out RaycastHit hit, float.MaxValue)) {
             Vector3 hitPoint = hit.point;
-            TrailRenderer trail = Instantiate(BulletTrail, BulletTrailSpawnPoint.position, Quaternion.identity);
+            TrailRenderer trail = Instantiate(_trail, BulletTrailSpawnPoint.position, Quaternion.identity);
             StartCoroutine(spawnTrail(trail, hitPoint));
         } else {
-            TrailRenderer trail = Instantiate(BulletTrail, BulletTrailSpawnPoint.position, Quaternion.identity);
+            TrailRenderer trail = Instantiate(_trail, BulletTrailSpawnPoint.position, Quaternion.identity);
             StartCoroutine(spawnTrail(trail, BulletTrailSpawnPoint.position + transform.forward * FallOffDistance));
         }
 
