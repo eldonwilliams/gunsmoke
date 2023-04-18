@@ -6,6 +6,22 @@ using TMPro;
 public class LeftHandHUDRender : MonoBehaviour
 {
     /// <summary>
+    ///  A reference to the single instance of LeftHandHUDRender that should exist
+    /// </summary>
+    static LeftHandHUDRender Instance;
+
+    /// <summary>
+    ///  Get the instance of LeftHandHUDRender
+    /// </summary>
+    /// <returns></returns>
+    public static LeftHandHUDRender GetInstance()
+    {
+        if (Instance != null) return Instance;
+        Instance = UnityUtil.GetRootComponent<LeftHandHUDRender>();
+        return Instance;
+    }
+
+    /// <summary>
     ///  A reference to the health text display
     /// </summary> 
     [SerializeField, Tooltip("A reference to the health text display")]
@@ -21,16 +37,54 @@ public class LeftHandHUDRender : MonoBehaviour
     ///  A reference to the main player
     /// </summary>
     private EntityPlayer _player;
-    
-    void Start()
+
+    /// <summary>
+    ///  Is the HUD shown?
+    /// </summary>
+    [HideInInspector]
+    public bool Hidden
+    {
+        get => _hidden;
+        set
+        {   
+            if (value == true) Hide();
+            else Show();
+            _hidden = value;
+        }
+    }
+
+    private bool _hidden = false;
+
+    IEnumerator Start()
     {
         _player = EntityPlayer.GetPlayer();
 
         UpdateDisplays();
         _player.OnHealthUpdate += (float _) => UpdateDisplays();
+
+
+        yield return new WaitForSeconds(3);
+        Hide();
+        yield return new WaitForSeconds(1);
+        Show();
+        yield return new WaitForSeconds(1);
+        Hide();
+        yield return new WaitForSeconds(1);
+        Show();
     }
 
-    private void UpdateDisplays() {
+    public void Hide()
+    {
+        LeanTween.moveX(GetComponent<RectTransform>(), -GetComponent<RectTransform>().rect.width, 0.75f).setEaseOutQuad();
+    }
+
+    public void Show()
+    {
+        LeanTween.moveX(GetComponent<RectTransform>(), 0, 0.75f).setEaseOutQuad();
+    }
+
+    private void UpdateDisplays()
+    {
         _healthDisplay.GetComponentInChildren<TMP_Text>().text = _player.GetHealth().ToString();
         _healthDisplay.Find("Fill").LeanScaleX(
             _player.GetHealth() / _player.GetMaxHealth(),
