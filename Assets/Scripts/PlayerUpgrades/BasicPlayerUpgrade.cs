@@ -41,7 +41,7 @@ public struct PlayerUpgradeReward
     public float amount;
 }
 
-[CreateAssetMenu(fileName = "Upgrade", menuName = "Gunsmoke/CreateBasicPlayerUpgrade")]
+[System.Serializable, CreateAssetMenu(fileName = "Upgrade", menuName = "Gunsmoke/CreateBasicPlayerUpgrade")]
 public class BasicPlayerUpgrade : ScriptableObject
 {
     static BasicPlayerUpgrade[] BasicPlayerUpgrades;
