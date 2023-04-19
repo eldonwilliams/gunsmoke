@@ -5,6 +5,26 @@ using System;
 using UnityEngine;
 
 [System.Serializable]
+public struct EventfulProperty<T>
+{
+    public T Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            OnPropertyChange?.Invoke(value);
+        }
+    }
+
+    private T _value;
+
+    public delegate void PropertyChangeEvent(T newValue);
+
+    public event PropertyChangeEvent OnPropertyChange;
+}
+
+[System.Serializable]
 public class SaveData
 {
     static bool SaveAlreadyMade = false;
@@ -15,9 +35,11 @@ public class SaveData
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public static SaveData GetSaveFromFile(string path) {
+    public static SaveData GetSaveFromFile(string path)
+    {
         //
-        if (SaveAlreadyMade) {
+        if (SaveAlreadyMade)
+        {
             Debug.Log("Two SaveData instances have been made from GetSaveFromFile, this warning is just incase this means something bad.");
         }
         SaveAlreadyMade = true;
@@ -33,6 +55,8 @@ public class SaveData
     /// </summary>
     public int alienDNA;
 
+    public EventfulProperty<string> test = new EventfulProperty<string>();
+
     /// <summary>
     ///  The path, relative to persistentDataPath this save is located at
     /// </summary>
@@ -47,7 +71,8 @@ public class SaveData
     public string fullPath
     { get => Path.Combine(Application.persistentDataPath, path); }
 
-    public SaveData(string path) {
+    public SaveData(string path)
+    {
         this.path = path;
     }
 
