@@ -80,6 +80,13 @@ public class SaveData
     public EventfulProperty<int> alienDNA = new EventfulProperty<int>(10);
 
     /// <summary>
+    ///  A list of the purchased player upgrades
+    /// </summary>
+    public EventfulProperty<List<BasicPlayerUpgrade>> purchasedUpgrades = new EventfulProperty<List<BasicPlayerUpgrade>>(
+        new List<BasicPlayerUpgrade>()
+    );
+
+    /// <summary>
     ///  The path, relative to persistentDataPath this save is located at
     /// </summary>
     [System.NonSerialized]
