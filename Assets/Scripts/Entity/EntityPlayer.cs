@@ -163,13 +163,13 @@ public class EntityPlayer : DamageableEntity
         Vector3 mousePos = Input.mousePosition;
         Ray mouseRay = _cameraTransform.GetComponent<Camera>().ScreenPointToRay(mousePos);
         if (Physics.Raycast(mouseRay, out RaycastHit hit, MaxMouseDistance)) {
-            Holding.forward = Vector3Utils.ProjectHorizontally(hit.point - transform.position);
+            transform.forward = Vector3Utils.ProjectHorizontally(hit.point - transform.position);
         } else if (movement != Vector3.zero) {
-            Holding.forward = movement;
+            transform.forward = movement;
         }
 
         // If we are moving, orient us towards where we are moving
-        if (movement != Vector3.zero) transform.forward = movement;
+        // if (movement != Vector3.zero) transform.forward = movement;
 
         // If the jump key is pressed, and on the ground, add some velocity on the y axis
         if (Input.GetButtonDown("Jump") && _grounded)

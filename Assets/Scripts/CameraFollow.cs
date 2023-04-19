@@ -109,7 +109,7 @@ public class CameraFollow : MonoBehaviour
 
         position = TrackedObject.position;
         // Move back by radius, putting this as a point on cylinder where h=inf
-        position -= TrackedObject.forward * radius;
+        // position -= Vector3.one.normalized * radius;
         position.y += OffsetY;
 
         rotation = Quaternion.LookRotation((TrackedObject.position + midpoint) - transform.position);
