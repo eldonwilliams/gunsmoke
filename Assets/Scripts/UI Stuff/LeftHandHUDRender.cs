@@ -63,6 +63,7 @@ public class LeftHandHUDRender : MonoBehaviour
 
         UpdateDisplays();
         _player.OnHealthUpdate += (float _) => UpdateDisplays();
+        _save.alienDNA.OnPropertyChange += (int _) => UpdateDisplays();
     }
 
     public void Hide()
@@ -82,6 +83,6 @@ public class LeftHandHUDRender : MonoBehaviour
             _player.GetHealth() / _player.GetMaxHealth(),
             0.2f).setEaseOutQuad();
         // TODO: Add damageDisplay to UpdateDisplays method
-        _damageDisplay.GetComponentInChildren<TMP_Text>().text = _save.alienDNA.ToString();
+        _damageDisplay.GetComponentInChildren<TMP_Text>().text = _save.alienDNA.Value.ToString();
     }
 }

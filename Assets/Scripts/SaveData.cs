@@ -4,9 +4,16 @@ using System.IO;
 using System;
 using UnityEngine;
 
+/// <summary>
+///  A wrapper around a variable that fires a event any time the variable changes, may not work completely for Lists for other classes that update internally.
+/// </summary>
 [System.Serializable]
 public struct EventfulProperty<T>
-{
+{   
+    /// <summary>
+    ///  The value of the property, if set will fire the changed event
+    /// </summary>
+    /// <value>The value</value>
     public T Value
     {
         get => _value;
@@ -17,10 +24,27 @@ public struct EventfulProperty<T>
         }
     }
 
+    /// <summary>
+    ///  Makes a new EventfulProperty with a default value
+    /// </summary>
+    /// <param name="defaultValue"></param>
+    public EventfulProperty(T defaultValue) {
+        _value = defaultValue;
+        OnPropertyChange = new PropertyChangeEvent((T _) => {});
+    }
+    
+    // WHY DOES SERIALIZEFIELD WORK?
+    /// <summary>
+    ///  The true value of the property
+    /// </summary>
+    [SerializeField]
     private T _value;
 
     public delegate void PropertyChangeEvent(T newValue);
 
+    /// <summary>
+    ///  Fires when the property changes
+    /// </summary>
     public event PropertyChangeEvent OnPropertyChange;
 }
 
@@ -53,9 +77,7 @@ public class SaveData
     ///  How much alien dna the player has
     ///  Used for player upgrades
     /// </summary>
-    public int alienDNA;
-
-    public EventfulProperty<string> test = new EventfulProperty<string>();
+    public EventfulProperty<int> alienDNA = new EventfulProperty<int>(10);
 
     /// <summary>
     ///  The path, relative to persistentDataPath this save is located at

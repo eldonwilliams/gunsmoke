@@ -104,7 +104,7 @@ public class EntityEnemy : DamageableEntity
 
         OnDeath += () => StartCoroutine(deathShrinkEffect());
         OnDeath += () => {
-            _save.alienDNA++;
+            _save.alienDNA.Value++;
         };
     }
 
