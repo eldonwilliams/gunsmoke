@@ -44,7 +44,7 @@ public class EntityEnemy : DamageableEntity
     /// <summary>
     ///  A reference to the CharacterController component made at Start
     /// </summary>
-    private CharacterController controller;
+    private CharacterController _controller;
 
     /// <summary>
     ///  Reference to the player's transform
@@ -75,8 +75,14 @@ public class EntityEnemy : DamageableEntity
     void Start()
     {   
         // Make controller, minMoveDistance to mix grounded bug
-        controller = gameObject.AddComponent<CharacterController>();
-        controller.minMoveDistance = 0;
+        _controller = gameObject.AddComponent<CharacterController>();
+        _controller.minMoveDistance = 0;
+
+        CapsuleCollider collider = GetComponent<CapsuleCollider>();
+        _controller.center = collider.center;
+        _controller.height = collider.height;
+        _controller.radius = collider.radius;
+        collider.enabled = false;
 
         /*
             Make a new material for this entity, for the color effect
@@ -112,8 +118,9 @@ public class EntityEnemy : DamageableEntity
     {
         if (IsDead()) return;
         Vector3 moveDirection = (Player.position - transform.position).normalized;
-        controller.Move(moveDirection * Description.Speed * Time.deltaTime);
-        controller.Move(new Vector3(0, GravityModifier * Time.deltaTime));
+        _controller.Move(moveDirection * Description.Speed * Time.deltaTime);
+        _controller.Move(new Vector3(0, GravityModifier * Time.deltaTime));
+        transform.forward = moveDirection;
 
         if (_lastAttack + 1 / Description.Damage.HitFrequency <= Time.time) TryAttack();
     }

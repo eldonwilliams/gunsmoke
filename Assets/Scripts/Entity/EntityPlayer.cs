@@ -106,6 +106,12 @@ public class EntityPlayer : DamageableEntity
         _controller = gameObject.AddComponent<CharacterController>();
         _controller.minMoveDistance = 0;
 
+        CapsuleCollider collider = GetComponent<CapsuleCollider>();
+        _controller.center = collider.center;
+        _controller.height = collider.height;
+        _controller.radius = collider.radius;
+        collider.enabled = false;
+
         _cameraTransform = Camera.main.transform;
 
         mainProfile.TryGetSettings<Vignette>(out _vignette);

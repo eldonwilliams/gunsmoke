@@ -217,7 +217,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a237fa5121fa34e5b951ebaecceb5ca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BulletTrail: {fileID: 0}
   BulletRayOrigin: {fileID: 0}
   BulletTrailSpawnPoint: {fileID: 3178944942044122183}
   ShootDebounce: 0.5
