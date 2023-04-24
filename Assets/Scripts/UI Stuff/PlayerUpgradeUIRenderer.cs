@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class PlayerUpgradeUIRenderer : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    /// <summary>
+    ///  A list of all the player upgrades to be rendered
+    /// </summary>
+    private BasicPlayerUpgrade[] _playerUpgrades;
+
+    /// <summary>
+    ///  UI Line prefab
+    /// </summary>
+    private GameObject _uiline;
+
+    void Start() {
+        _playerUpgrades = BasicPlayerUpgrade.GetBasicPlayerUpgrades();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    /// <summary>
+    ///  Adds a line renderer that tracks the position of both game objects until either is destroyed
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    private void connectTwoUpgrades(GameObject a, GameObject b) {
+
     }
 }
